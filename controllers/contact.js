@@ -45,14 +45,14 @@ exports.postContact = (req, res) => {
     service: 'SendGrid',
     auth: {
       user: process.env.SENDGRID_USER,
-      pass: process.env.SENDGRID_PASSWORD
-    }
+      pass: process.env.SENDGRID_PASSWORD,
+    },
   });
   const mailOptions = {
     to: 'e@evancodes.io',
     from: `${fromName} <${fromEmail}>`,
     subject: 'Contact Form | Just Recipes',
-    text: req.body.message
+    text: req.body.message,
   };
 
   return transporter.sendMail(mailOptions)
@@ -67,11 +67,11 @@ exports.postContact = (req, res) => {
           service: 'SendGrid',
           auth: {
             user: process.env.SENDGRID_USER,
-            pass: process.env.SENDGRID_PASSWORD
+            pass: process.env.SENDGRID_PASSWORD,
           },
           tls: {
-            rejectUnauthorized: false
-          }
+            rejectUnauthorized: false,
+          },
         });
         return transporter.sendMail(mailOptions);
       }

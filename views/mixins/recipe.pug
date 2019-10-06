@@ -1,0 +1,12 @@
+mixin recipe(recipe)
+  .grid-item.col-xs-12.col-md-6.col-lg-4.p-1
+    .card
+      .card-header.text-center
+        h5.card-title #{recipe.name} (#{recipe.popularityScore})
+        .card-subtitle
+          a.text-muted(href=recipe.sourceUrl) #{recipe.sourceName}
+      img.card-img-top(src=recipe.image alt=recipe.name)
+      .card-body
+        ul
+          each ingredient in recipe.ingredients
+            li= ingredient

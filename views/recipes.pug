@@ -1,0 +1,11 @@
+extends layout
+include mixins/recipe
+
+block content
+  if recipes.length > 0
+    .grid
+      .grid-sizer.col-xs-12.col-md-6.col-lg-4
+      each recipe in recipes
+        +recipe(recipe)
+  else
+    h5 No recipes found that match "#{query}"...

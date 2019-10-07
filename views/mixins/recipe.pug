@@ -4,7 +4,7 @@ mixin recipe(recipe)
       .card-header.text-center
         h5.card-title #{recipe.name} (#{recipe.popularityScore})
         .card-subtitle
-          a.text-muted(href=recipe.sourceUrl) #{recipe.sourceName}
+          a.text-muted(href=recipe.source.url) #{recipe.source.name}
       img.card-img-top(src=recipe.image alt=recipe.name)
       .card-body
         ul

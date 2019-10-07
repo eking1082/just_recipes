@@ -3,8 +3,8 @@ const { Seeder } = require('mongoose-data-seed');
 const Recipe = require('../models/Recipe');
 
 const source = {
-  sourceName: 'The Pioneer Woman',
-  sourceUrl: '#',
+  name: 'The Pioneer Woman',
+  url: '#',
 };
 const ingredients = [
   '1/2 cup Margarine',
@@ -30,56 +30,56 @@ const data = [
     image: '//placehold.it/500x280',
     popularityScore: 50,
     ingredients,
-    ...source,
+    source,
   },
   {
     name: 'Mint Chocolate Chip Cookies',
     image: '//placehold.it/500x300',
     popularityScore: 25,
     ingredients: ingredients.slice(2, 7),
-    ...source,
+    source,
   },
   {
     name: 'Oatmeal Chocolate Chip Cookies',
     image: '//placehold.it/500x250',
     popularityScore: 10,
     ingredients: ingredients.slice(5, 15),
-    ...source,
+    source,
   },
   {
     name: 'Potato Chips',
     image: '//placehold.it/500x280',
     popularityScore: 75,
     ingredients: ingredients.slice(1, 3),
-    ...source,
+    source,
   },
   {
     name: 'German Chocolate Cake',
     image: '//placehold.it/500x350',
     popularityScore: 90,
     ingredients: ingredients.slice(0, 10),
-    ...source,
+    source,
   },
   {
     name: 'Carrot Cake',
     image: '//placehold.it/500x280',
     popularityScore: 75,
     ingredients: ingredients.slice(5, 10),
-    ...source,
+    source,
   },
   {
     name: 'Red Velvet Cake',
     image: '//placehold.it/500x280',
     popularityScore: 15,
     ingredients: ingredients.slice(7, 13),
-    ...source,
+    source,
   },
   {
     name: 'Peanut Butter Cookies',
     image: '//placehold.it/500x280',
     popularityScore: 85,
     ingredients: ingredients.slice(6, 15),
-    ...source,
+    source,
   },
 ];
 

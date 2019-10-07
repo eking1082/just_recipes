@@ -15,6 +15,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const sass = require('node-sass-middleware');
+const bluebird = require('bluebird');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -41,6 +42,7 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
+mongoose.Promise = bluebird;
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);

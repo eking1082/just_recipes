@@ -12,10 +12,8 @@ const dotenv = require('dotenv');
 const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
-const mongoose = require('mongoose');
 const passport = require('passport');
 const sass = require('node-sass-middleware');
-const bluebird = require('bluebird');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -42,16 +40,7 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.Promise = bluebird;
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useNewUrlParser', true);
-mongoose.connect(process.env.MONGODB_URI);
-mongoose.connection.on('error', (err) => {
-  console.error(err);
-  console.log('%s MongoDB connection error. Please make sure MongoDB is running.');
-  process.exit();
-});
+require('./config/mongoose');
 
 /**
  * Express configuration.

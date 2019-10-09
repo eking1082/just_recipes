@@ -1,7 +1,22 @@
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 
-const thePioneerWoman = (url) => {
+// returns a list of recipe urls from thepioneerwoman.com/cooking/ added after fromDate
+exports.crawlNewRecipes = (fromDate) => rp({
+  uri: 'https://thepioneerwoman.com/cooking/',
+  transform(body) {
+    return cheerio.load(body);
+  },
+}).then(($) => {
+  const urls = $('.container.category-with-latest-filter-results')
+    .find('.post-card-vertical.category-cooking')
+    .find('a')
+    .map((i, el) => $(el).attr('href'))
+    .get();
+  return urls;
+});
+
+exports.scrapeRecipe = (url) => {
   if (!url.includes('thepioneerwoman.com/cooking/')) {
     throw new Error("url provided must include 'thepioneerwoman.com/cooking/'");
   }
@@ -30,18 +45,24 @@ const thePioneerWoman = (url) => {
       cook: $(times.get(2)).text(),
     };
 
+    const imageUrl = $('.entry-content')
+      .children('p')
+      .first()
+      .children('a')
+      .first()
+      .attr('href');
+
     return {
       ingredients,
       directions,
       time,
+      imageUrl,
       sourceName: 'The Pioneer Woman',
       name: $('.recipe-title').first().text(),
       servings: times.last().text(),
-      imageUrl: $('.recipe-summary-thumbnail').first().children('img').attr('src'),
+      publishDate: $('.entry-date.published').attr('datetime'),
     };
   }).catch(() => {
     throw new Error('There was a problem retrieving the page');
   });
 };
-
-module.exports = thePioneerWoman;

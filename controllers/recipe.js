@@ -5,8 +5,8 @@ const OFFSET_DEFAULT = 0;
 const LIMIT_DEFAULT = 20;
 const MAX_LIMIT = 50;
 
-const findPopular = (query, offset, limit) =>
-  Recipe.find(query ? { name: { $regex: query, $options: 'i' } } : {})
+const findPopular = (keyword, offset, limit) =>
+  Recipe.find(keyword ? { name: { $regex: keyword, $options: 'i' } } : {})
     .sort({ popularityScore: 'desc', updatedAt: 'desc' })
     .skip(offset || OFFSET_DEFAULT)
     .limit(Math.min((limit || LIMIT_DEFAULT), MAX_LIMIT));
@@ -28,16 +28,16 @@ exports.index = (req, res) => {
  */
 exports.search = (req, res) => {
   const {
-    q: query,
+    q: keyword,
     o: offset,
     l: limit,
   } = req.query;
 
-  findPopular(query, offset, limit)
+  findPopular(keyword, offset, limit)
     .then((recipes) => {
       res.render('recipes', {
-        title: _.startCase(query),
-        query,
+        title: _.startCase(keyword),
+        keyword,
         recipes,
       });
     });

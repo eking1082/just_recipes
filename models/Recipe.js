@@ -5,6 +5,7 @@ const recipeSchema = new mongoose.Schema({
   source: {
     url: String,
     name: String,
+    domain: String,
   },
   image: String,
   ingredients: [String],
@@ -20,6 +21,7 @@ const recipeSchema = new mongoose.Schema({
   },
   servings: String,
   popularityScore: { type: Number, default: 0 },
+  publishDate: Date,
 }, { timestamps: true });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);

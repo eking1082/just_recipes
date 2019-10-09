@@ -1,4 +1,4 @@
-const parseDomain = require('parse-domain');
+const Recipe = require('../models/Recipe');
 const thepioneerwoman = require('./thepioneerwoman');
 
 const domains = {
@@ -30,18 +30,52 @@ const domains = {
   // yummly: require('./yummly'),
 };
 
-const scraper = (url) => {
-  const { domain } = parseDomain(url);
-  if (!domains[domain]) throw new Error('Site not yet supported');
+exports.crawlNewRecipes = (domain) => {
+  console.log(`Crawling ${domain} for new recipes`);
 
-  return domains[domain](url)
-    .then((recipe) => {
-      if (!recipe.name || !recipe.ingredients.length || !recipe.directions.length) {
-        throw new Error('No recipe found on page');
-      }
-
-      return recipe;
+  return Recipe.findOne({ 'source.domain': domain })
+    .sort({ publishDate: 'desc' })
+    .select('publishDate -_id')
+    .then(({ publishDate: fromDate }) => {
+      console.log(`Searching from date: ${fromDate}`);
+      return domains[domain].crawlNewRecipes(fromDate);
+    })
+    .then((recipeUrls) => {
+      console.log(`Found ${recipeUrls.length} new recipes`);
+      console.log(recipeUrls);
+      return recipeUrls;
     });
 };
 
-module.exports = scraper;
+exports.scrapeRecipe = (domain, url) => {
+  console.log(`Retrieving recipe - ${url}`);
+  return domains[domain].scrapeRecipe(url)
+    .then(({
+      name, ingredients, directions, sourceName, imageUrl, time, servings, publishDate,
+    }) => {
+      if (!name || !ingredients.length || !directions.length) {
+        throw new Error('No recipe found on page');
+      }
+
+      const recipe = new Recipe({
+        name,
+        ingredients,
+        directions,
+        time,
+        servings,
+        publishDate,
+        source: {
+          url,
+          domain,
+          name: sourceName,
+        },
+        image: imageUrl,
+      });
+
+      return recipe.save();
+    })
+    .then((recipe) => {
+      console.log(`RECIPE SAVED - ${recipe.name}`);
+      console.log(recipe);
+    });
+};

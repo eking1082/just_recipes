@@ -8,7 +8,18 @@ const recipeSchema = new mongoose.Schema({
   },
   image: String,
   ingredients: [String],
-  popularityScore: Number,
+  directions: [String],
+  // TODO: update time and servings to use numbers
+  time: {
+    prep: String,
+    cook: String,
+    active: String,
+    inactive: String,
+    ready: String,
+    total: String,
+  },
+  servings: String,
+  popularityScore: { type: Number, default: 0 },
 }, { timestamps: true });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);

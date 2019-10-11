@@ -1,7 +1,7 @@
 const rp = require('request-promise');
-const url = require('url');
 const moment = require('moment');
 const cheerio = require('cheerio');
+const removeQueryString = require('../../utils/removeQueryString');
 
 const BASE_INDEX = 'https://thepioneerwoman.com/cooking/';
 
@@ -62,17 +62,11 @@ exports.scrapeRecipe = ($) => {
     cook: $(times.get(2)).text(),
   };
 
-  let imageUrl = url.parse($("meta[property='og:image']").last().attr('content'));
-  imageUrl.search = '';
-  imageUrl.query = '';
-  imageUrl = url.format(imageUrl);
-
   return {
     ingredients,
     directions,
     time,
-    // imageUrl: $('.featured-image').find('img').attr('src'),
-    imageUrl,
+    imageUrl: removeQueryString($("meta[property='og:image']").last().attr('content')),
     thumbnailUrl: $('.recipe-summary-thumbnail').find('img').first().attr('src'),
     sourceName: 'The Pioneer Woman',
     name: $('.recipe-title').first().text(),

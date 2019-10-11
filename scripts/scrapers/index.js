@@ -30,7 +30,7 @@ const domains = {
   // myrecipes: require('./myrecipes'),
   // seriouseats: require('./seriouseats'),
   // simplyrecipes: require('./simplyrecipes'),
-  // smittenkitchen: require('./smittenkitchen'),
+  smittenkitchen: require('./smittenkitchen'),
   thepioneerwoman: require('./thepioneerwoman'),
   // therealfoodrds: require('./therealfoodrds'),
   // thespruceeats: require('./thespruceeats'),
@@ -117,6 +117,8 @@ const scraper = (domain) => ({
         publishDate,
       } = domains[domain].scrapeRecipe($);
 
+      const servingsMatch = servings.match(/[0-9]+/);
+
       await Recipe.findOneAndUpdate({
         'source.url': page.url,
       }, {
@@ -132,7 +134,7 @@ const scraper = (domain) => ({
           url: page.url,
           name: sourceName,
         },
-        servings: numeral(servings).value(),
+        servings: servingsMatch ? servingsMatch[0] : null,
       }, {
         upsert: true,
         runValidators: true,

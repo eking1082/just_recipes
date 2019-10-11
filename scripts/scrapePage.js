@@ -1,4 +1,5 @@
 const url = require('url');
+const rp = require('request-promise');
 
 const pageUrl = process.argv[2];
 if (!pageUrl) {
@@ -9,7 +10,7 @@ if (!pageUrl) {
 const domain = url.parse(pageUrl).host.split('.')[0];
 const scraper = require('./scrapers')(domain);
 
-scraper.savePage(pageUrl)
-  .then((page) => scraper.scrapeRecipe(page))
+rp(pageUrl)
+  .then((html) => scraper.scrapeRecipe(pageUrl, html))
   .catch((err) => console.error(err))
   .finally(() => process.exit());

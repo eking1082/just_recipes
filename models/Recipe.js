@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+// const uniqueValidator = require('mongoose-unique-validator');
 
 const arrayNotEmpty = [(v) => v.length > 0, 'Path `{PATH}` must not be empty.'];
 

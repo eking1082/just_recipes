@@ -2,7 +2,6 @@ require('dotenv/config');
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 
-const Page = require('./Page');
 const User = require('./User');
 const Recipe = require('./Recipe');
 
@@ -20,4 +19,4 @@ mongoose.connection.on('error', (err) => {
   process.exit();
 });
 
-module.exports = { Page, Recipe, User };
+module.exports = { Recipe, User };

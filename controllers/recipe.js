@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const Recipe = require('../models/Recipe');
+const { Recipe } = require('../models');
 
 const OFFSET_DEFAULT = 0;
 const LIMIT_DEFAULT = 20;

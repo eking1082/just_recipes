@@ -28,6 +28,8 @@ public/js/lib/popper.min*
 
 public/images
 
+scripts/**/*.html
+
 # API keys and secrets
 .env
 

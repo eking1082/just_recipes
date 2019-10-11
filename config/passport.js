@@ -5,7 +5,7 @@ const { Strategy: FacebookStrategy } = require('passport-facebook');
 const { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth');
 const moment = require('moment');
 
-const User = require('../models/User');
+const { User } = require('../models');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

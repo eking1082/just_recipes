@@ -1,16 +1,26 @@
 const mongoose = require('mongoose');
 
+const arrayNotEmpty = [(v) => v.length > 0, 'Path `{PATH}` must not be empty.'];
+
 const recipeSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   source: {
-    url: String,
-    name: String,
-    domain: String,
+    url: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
+    domain: { type: String, required: true },
   },
-  image: String,
-  ingredients: [String],
-  directions: [String],
-  // TODO: update time and servings to use numbers
+  imageUrl: { type: String, required: true },
+  thumbnailUrl: { type: String, required: true },
+  ingredients: {
+    type: [String],
+    required: true,
+    validate: arrayNotEmpty,
+  },
+  directions: {
+    type: [String],
+    required: true,
+    validate: arrayNotEmpty,
+  },
   time: {
     prep: String,
     cook: String,
@@ -19,7 +29,7 @@ const recipeSchema = new mongoose.Schema({
     ready: String,
     total: String,
   },
-  servings: String,
+  servings: Number,
   popularityScore: { type: Number, default: 0 },
   publishDate: Date,
 }, { timestamps: true });

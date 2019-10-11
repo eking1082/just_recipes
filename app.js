@@ -40,7 +40,7 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-require('./config/mongoose');
+require('./models/index');
 
 /**
  * Express configuration.

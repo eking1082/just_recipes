@@ -11,8 +11,9 @@
   "scripts": {
     "postinstall": "npm rebuild node-sass",
     "start": "node app.js",
-    "test": "nyc mocha --timeout=10000 --exit",
-    "lint": "eslint \"**/*.js\""
+    "test": "nyc mocha",
+    "lint": "eslint \"**/*.js\"",
+    "migrate": "migrate"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
@@ -39,13 +40,14 @@
     "lusca": "^1.6.1",
     "mailchecker": "^3.2.35",
     "masonry-layout": "^4.2.2",
+    "migrate-mongoose": "^4.0.0",
     "moment": "^2.24.0",
     "mongoose": "^5.7.1",
-    "mongoose-data-seed": "^2.1.4",
     "morgan": "^1.9.1",
     "node-sass": "^4.12.0",
     "node-sass-middleware": "^0.11.0",
     "nodemailer": "^6.3.0",
+    "numeral": "^2.0.6",
     "passport": "^0.4.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth": "^2.0.0",
@@ -58,6 +60,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "twit": "^2.2.11",
+    "uuid": "^3.3.3",
     "validator": "^11.1.0"
   },
   "devDependencies": {
@@ -76,7 +79,8 @@
     "node": ">=8.16.1",
     "npm": ">=6.4.1"
   },
-  "mdSeed": {
-    "seedersFolder": "./seeders"
+  "mocha": {
+    "exit": true,
+    "spec": "test/**/*.test.js"
   }
 }

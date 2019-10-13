@@ -1,7 +1,7 @@
 const rp = require('request-promise');
 const moment = require('moment');
 const cheerio = require('cheerio');
-const removeQueryString = require('../../utils/removeQueryString');
+const removeQueryString = require('../../utils/url');
 
 const BASE_INDEX = 'https://thepioneerwoman.com/cooking/';
 

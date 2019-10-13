@@ -1,11 +1,8 @@
-const removeQueryString = require('../../utils/removeQueryString');
+const { removeQueryString } = require('../../utils/url');
 
 exports.baseUrl = 'https://thepioneerwoman.com/';
-
-exports.pathBlacklist = [
-  '/confessions/',
-  '/privacy-policy/',
-];
+exports.sourceName = 'The Pioneer Woman';
+exports.pathWhitelist = ['cooking', 'food-and-friends'];
 
 exports.scrapeRecipe = ($) => {
   const ingredients = $('.list-ingredients')

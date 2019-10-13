@@ -32,17 +32,24 @@ const domains = {
 };
 /* eslint-enable global-require */
 
+const discoverResources = (buffer) => {
+  const $ = cheerio.load(buffer.toString('utf8'));
+  return $('a[href]').map((i, el) => $(el).attr('href')).get();
+};
+
 const scraper = (domain) => ({
   baseUrl: domains[domain].baseUrl,
-  pathBlacklisted: (path) => domains[domain].pathBlacklist
-    .some((blacklistedPath) => path.startsWith(blacklistedPath)),
+  discoverResources: domains[domain].discoverResources || discoverResources,
+  pathWhitelist: domains[domain].pathWhitelist,
+
+  pathWhitelisted: (path) =>
+    domains[domain].pathWhitelist.some((wlPath) => path.startsWith(`/${wlPath}/`)),
 
   scrapeRecipe: async (url, html) => {
     const $ = cheerio.load(html);
     const { sourceName, ...recipe } = domains[domain].scrapeRecipe($);
     if (!recipe.name || recipe.ingredients.length === 0 || recipe.directions.length === 0) {
-      // console.log(`No recipe found - ${url}`);
-      return null;
+      return { status: 'no_recipe', message: `No recipe found - ${url}` };
     }
 
     const servingsMatch = recipe.servings.match(/[0-9]+/);
@@ -50,20 +57,14 @@ const scraper = (domain) => ({
     recipe.source = { domain, url, name: sourceName };
 
     try {
-      let recipeRecord = await Recipe.findOne({ 'source.url': url });
-      if (recipeRecord) {
-        recipeRecord.update(recipe);
-      } else {
-        recipeRecord = new Recipe(recipe);
-      }
+      await Recipe.findOneAndDelete({ 'source.url': url });
+      const recipeRecord = new Recipe(recipe);
       await recipeRecord.save();
 
-      // console.log(`Recipe saved - ${recipeRecord.name}`);
-      return recipeRecord;
+      return { status: 'success', message: `Recipe saved - ${recipeRecord.name}`, recipeRecord };
     } catch (e) {
       if (e.name === 'ValidationError') {
-        // console.error(`${e.message} - ${url}`);
-        return null;
+        return { status: 'failed', message: `${e.message} - ${url}` };
       }
       throw e;
     }

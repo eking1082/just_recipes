@@ -1,92 +1,217 @@
+require('colors');
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+const glob = require('glob');
+const moment = require('moment');
+const onDeath = require('death');
 const Crawler = require('simplecrawler');
-const _cliProgress = require('cli-progress');
+const ProgressBar = require('progress');
 const { Recipe } = require('../models');
 
 const domain = process.argv[2];
 const reScrape = process.argv.includes('-r');
+const verbose = process.argv.includes('-v');
+const clean = process.argv.includes('--clean');
+const ignoreWhitelist = process.argv.includes('--ignore-wl');
 if (!domain) {
-  console.log('Please provide a domain to crawl');
+  console.log('Please provide a domain to crawl'.red);
   process.exit();
 }
 
-const scraper = require('./scrapers')(domain);
-
-if (!scraper) {
-  console.log('Provided domain is not supported');
+let scraper;
+try {
+  // eslint-disable-next-line global-require
+  scraper = require('./scrapers')(domain);
+} catch (e) {
+  console.log('Provided domain is not supported'.red);
   process.exit();
 }
 
-const pathsWithRecipes = {
-  '': true, // ignore home
-};
-
-const updatePathsWithRecipes = (path, hasRecipe) => {
-  if (Object.keys(pathsWithRecipes).includes(path)) {
-    if (hasRecipe) pathsWithRecipes[path] = true;
-  } else {
-    pathsWithRecipes[path] = hasRecipe;
-  }
+let state = {
+  pathsWithRecipes: [],
+  pageStats: {
+    recipeCount: 0,
+    existingCount: 0,
+    failedCount: 0,
+  },
 };
 
 let progress;
 const crawler = new Crawler(scraper.baseUrl);
-// crawler.maxConcurrency = 1; // default 5
-crawler.maxDepth = 2;
-// crawler.interval = 3000;
+crawler.discoverResources = scraper.discoverResources;
+crawler.timeout = 5000;
+// crawler.maxDepth = 2;
 
-crawler.addDownloadCondition((queueItem, response) => !response.headers['content-type'].startsWith('image/'));
+const addErrorEventHandler = (eventName) => {
+  crawler.on(eventName, (queueItem, e) => {
+    progress.interrupt(`${eventName} - ${e}\n${util.inspect(queueItem)}`.red);
+  });
+};
 
-crawler.on('crawlstart', () => {
-  progress = new _cliProgress.SingleBar({
-    format: '| {bar} | {percentage}% | {value}/{total} Pages | Open Requests: {openRequests}',
-    barIncompleteChar: '-',
-    clearOnComplete: true,
-  }, _cliProgress.Presets.rect);
-  progress.start(10000, 0, { openRequests: 0 });
+crawler.addDownloadCondition((queueItem) => {
+  const { contentType } = queueItem.stateData;
+  return contentType && !contentType.startsWith('image/');
+});
+crawler.addDownloadCondition((queueItem) => {
+  const { contentLength } = queueItem.stateData;
+  return contentLength < 1000000; // 1mb
+});
+if (!ignoreWhitelist && scraper.pathWhitelist.length !== 0) {
+  crawler.addFetchCondition((queueItem) => scraper.pathWhitelisted(queueItem.uriPath));
+}
+
+if (verbose) {
+  crawler.on('fetchdisallowed', (queueItem) => progress.interrupt(`fetchdisallowed - ${queueItem.url}`.yellow));
+  crawler.on('fetchtimeout', (queueItem, timeout) => progress.interrupt(`fetchtimeout - ${timeout}ms - ${queueItem.url}`.yellow));
+  crawler.on('fetchdataerror', (queueItem) => progress.interrupt(`fetchdataerror - file too large - ${queueItem.url}`.yellow));
+  crawler.on('fetchprevented', (queueItem) => progress.interrupt(`fetchprevented - ${queueItem.url}`.yellow));
+  crawler.on('downloadprevented', (queueItem) => progress.interrupt(`downloadprevented - ${queueItem.url}`.yellow));
+}
+
+crawler.on('queueerror', (e, queueItem) => progress.interrupt(`queueerror - ${e}\n${util.inspect(queueItem)}`.red));
+crawler.on('robotstxterror', (e) => progress.interrupt(`robotstxterror - ${e}`.red));
+addErrorEventHandler('fetchclienterror');
+addErrorEventHandler('fetchconditionerror');
+addErrorEventHandler('cookieerror');
+addErrorEventHandler('downloadconditionerror');
+
+crawler.on('crawlstart', async () => {
+  if (clean) {
+    console.log('Starting from clean state'.green);
+  } else {
+    glob(`/tmp/crawler_queue_${domain}*.json`, {}, (e, files) => {
+      if (e) throw e;
+      if (files.length === 0) {
+        console.log('No saved state found'.yellow);
+        return;
+      }
+
+      const crawlerQueue = files.sort().reverse()[0];
+      crawler.queue.defrost(crawlerQueue, (e) => {
+        if (e) throw e;
+        state = JSON.parse(fs.readFileSync(crawlerQueue.replace('_queue_', '_state_')));
+        console.log(`Continuing from ${crawlerQueue}`.green);
+      });
+    });
+  }
+
+  progress = new ProgressBar('|:bar| (:percent) :current/:total | Est: :eta (:elapsed) | Recipes: :recipeCount Existing: :existingCount Failed: :failedCount', {
+    total: 10,
+    width: 100,
+  });
 });
 
-crawler.on('fetchcomplete', async (queueItem, responseBuffer, response) => {
-  if (!response.headers['content-type'].startsWith('text/html') || scraper.pathBlacklisted(queueItem.uriPath)) {
-    return;
-  }
+crawler.on('fetchcomplete', async (queueItem, responseBuffer) => {
+  if (!queueItem.stateData.contentType.startsWith('text/html')) return;
 
   const path = `${queueItem.uriPath.split('/')[1]}`;
   if (!reScrape) {
     const recipe = await Recipe.findOne({ 'source.url': queueItem.url });
     if (recipe) {
-      // console.log(`Recipe already exists - ${recipe.name}`);
-      updatePathsWithRecipes(path, true);
+      progress.interrupt(`Recipe already exists - ${recipe.name}`);
+      state.pageStats.existingCount++;
+      state.pathsWithRecipes.push(path);
       return;
     }
   }
 
-  const recipe = await scraper.scrapeRecipe(queueItem.url, responseBuffer.toString());
-  updatePathsWithRecipes(path, !!recipe);
+  const { status, message } = await scraper.scrapeRecipe(queueItem.url, responseBuffer.toString());
+  if (status === 'success') {
+    progress.interrupt(message.green);
+    state.pageStats.recipeCount++;
+    state.pathsWithRecipes.push(path);
+  } else if (status === 'failed') {
+    progress.interrupt(message.red);
+    state.pageStats.failedCount++;
+  } else if (status === 'no_recipe') {
+    progress.interrupt(message);
+  }
+});
+
+const tickProgress = () => {
+  progress.tick(state.pageStats);
+  crawler.queue.getLength((e, length) => {
+    if (e) throw e;
+    progress.total = length;
+  });
+  crawler.queue.countItems({ fetched: true }, (e, fetchedCount) => {
+    if (e) throw e;
+    progress.curr = fetchedCount;
+  });
+};
+
+const logComplete = () => {
+  console.log(`  Added ${state.pageStats.recipeCount} recipe(s)`.green);
+  console.log(`  Ignored ${state.pageStats.existingCount} recipe(s)`.yellow);
+  if (state.pageStats.failedCount > 0) console.log(`  ${state.pageStats.failedCount} recipe(s) failed`.red);
+};
+
+const cleanSavedState = (callback, ignoreFileName) => {
+  glob(`/tmp/crawler_*${domain}*.json`, {}, (e, files) => {
+    if (e) throw e;
+    if (files.length !== 0) {
+      files
+        .filter((file) => !file.includes(ignoreFileName))
+        .forEach((file) => fs.unlinkSync(file));
+    }
+    callback();
+  });
+};
+
+const saveState = (callback) => {
+  const fileName = `${domain}_${moment().format()}`;
+  crawler.queue.freeze(path.join('/tmp', `crawler_queue_${fileName}.json`), (e) => {
+    if (e) callback(e, 'Failed to save crawler state'.red);
+
+    fs.writeFileSync(path.join('/tmp', `crawler_state_${fileName}.json`), JSON.stringify(state));
+    cleanSavedState(() => callback(null, 'Successfully saved crawler state'.green), fileName);
+  });
+};
+
+const progressInterval = setInterval(() => tickProgress(), 500);
+const saveStateInterval = setInterval(() => {
+  saveState((e, message) => {
+    if (e) {
+      progress.interrupt(message);
+      progress.interrupt(e);
+    } else {
+      progress.interrupt(message);
+    }
+  });
+}, 900000 /* 15 minutes */);
+
+onDeath((signal) => {
+  tickProgress();
+  clearInterval(saveStateInterval);
+  clearInterval(progressInterval);
+
+  console.log(`\n\nReceived ${signal} signal, attempting to save crawler state.`.red);
+  logComplete();
+  saveState((e, message) => {
+    if (e) {
+      console.log(message);
+      console.error(e);
+    } else {
+      console.log(message);
+    }
+    process.exit();
+  });
+});
+
+crawler.on('complete', () => {
+  tickProgress();
+  clearInterval(saveStateInterval);
+  clearInterval(progressInterval);
+
+  cleanSavedState(() => {
+    console.log('\nFinished crawling'.green);
+    logComplete();
+    if (ignoreWhitelist || scraper.pathWhitelist.length === 0) {
+      console.log('These paths had recipes, whitelist them: ', state.pathsWithRecipes);
+    }
+    process.exit();
+  });
 });
 
 crawler.start();
-
-const barInterval = setInterval(() => {
-  crawler.queue.getLength((e, length) => {
-    if (e) throw e;
-    progress.setTotal(length);
-  });
-
-  crawler.queue.countItems({ fetched: true }, (e, fetchedCount) => {
-    if (e) throw e;
-    progress.update(fetchedCount, {
-      openRequests: crawler._openRequests.length,
-    });
-  });
-}, 1000);
-
-crawler.on('complete', () => {
-  clearInterval(barInterval);
-  progress.stop();
-
-  console.log('Finished crawling');
-  console.log('These paths had no recipes, blacklist them for improved performance: ',
-    Object.keys(pathsWithRecipes).filter((key) => !pathsWithRecipes[key]));
-
-  process.exit();
-});

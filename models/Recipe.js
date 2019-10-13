@@ -1,17 +1,39 @@
 const mongoose = require('mongoose');
-// const uniqueValidator = require('mongoose-unique-validator');
+const { isValidUrl } = require('../utils/url');
 
 const arrayNotEmpty = [(v) => v.length > 0, 'Path `{PATH}` must not be empty.'];
 
 const recipeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   source: {
-    url: { type: String, unique: true, required: true },
+    url: {
+      type: String,
+      required: true,
+      unique: true,
+      validate: {
+        validator: isValidUrl,
+        message: '{VALUE} is not a valid URL',
+      },
+    },
     name: { type: String, required: true },
     domain: { type: String, required: true },
   },
-  imageUrl: { type: String, required: true },
-  thumbnailUrl: { type: String, required: true },
+  imageUrl: {
+    type: String,
+    required: true,
+    validate: {
+      validator: isValidUrl,
+      message: '{VALUE} is not a valid URL',
+    },
+  },
+  thumbnailUrl: {
+    type: String,
+    required: true,
+    validate: {
+      validator: isValidUrl,
+      message: '{VALUE} is not a valid URL',
+    },
+  },
   ingredients: {
     type: [String],
     required: true,

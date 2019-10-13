@@ -12,5 +12,6 @@ const scraper = require('./scrapers')(domain);
 
 rp(pageUrl)
   .then((html) => scraper.scrapeRecipe(pageUrl, html))
+  .then(({ message, recipeRecord }) => console.log(message, recipeRecord))
   .catch((err) => console.error(err))
   .finally(() => process.exit());

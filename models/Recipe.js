@@ -4,7 +4,7 @@ const { isValidUrl } = require('../utils/url');
 const arrayNotEmpty = [(v) => v.length > 0, 'Path `{PATH}` must not be empty.'];
 
 const recipeSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, trim: true },
   source: {
     url: {
       type: String,
@@ -15,8 +15,8 @@ const recipeSchema = new mongoose.Schema({
         message: '{VALUE} is not a valid URL',
       },
     },
-    name: { type: String, required: true },
-    domain: { type: String, required: true },
+    name: { type: String, required: true, trim: true },
+    domain: { type: String, required: true, trim: true },
   },
   imageUrl: {
     type: String,
@@ -34,23 +34,25 @@ const recipeSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid URL',
     },
   },
-  ingredients: {
-    type: [String],
+  ingredients: [{
+    type: String,
     required: true,
+    trim: true,
     validate: arrayNotEmpty,
-  },
-  directions: {
-    type: [String],
+  }],
+  directions: [{
+    type: String,
     required: true,
+    trim: true,
     validate: arrayNotEmpty,
-  },
+  }],
   time: {
-    prep: String,
-    cook: String,
-    active: String,
-    inactive: String,
-    ready: String,
-    total: String,
+    prep: { type: String, trim: true },
+    cook: { type: String, trim: true },
+    active: { type: String, trim: true },
+    inactive: { type: String, trim: true },
+    ready: { type: String, trim: true },
+    total: { type: String, trim: true },
   },
   servings: Number,
   popularityScore: { type: Number, default: 0 },

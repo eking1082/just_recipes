@@ -20,6 +20,7 @@ const domains = {
   // foodandwine: require('./foodandwine'),
   // foodnetwork: require('./foodnetwork'),
   // gimmesomeoven: require('./gimmesomeoven'),
+  grannysvitalvittles: require('./grannysvitalvittles'),
   // myrecipes: require('./myrecipes'),
   // seriouseats: require('./seriouseats'),
   // simplyrecipes: require('./simplyrecipes'),
@@ -51,10 +52,10 @@ const scraper = (domain) => ({
 
   scrapeRecipe: async (url, html) => {
     const $ = cheerio.load(html);
-    const { sourceName, ...recipe } = domains[domain].scrapeRecipe($);
+    const recipe = domains[domain].scrapeRecipe($);
 
     if (recipe.servings) recipe.servings = parseInt(recipe.servings.match(/[0-9]+/)[0]);
-    recipe.source = { domain, url, name: sourceName };
+    recipe.source = { domain, url, name: domains[domain].sourceName };
 
     return recipe;
   },

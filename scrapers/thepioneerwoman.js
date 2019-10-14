@@ -29,7 +29,6 @@ exports.scrapeRecipe = ($) => {
     time,
     imageUrl: removeQueryString($("meta[property='og:image']").last().attr('content')),
     thumbnailUrl: $('.recipe-summary-thumbnail').find('img').first().attr('src'),
-    sourceName: 'The Pioneer Woman',
     name: $('.recipe-title').first().text(),
     servings: times.last().text(),
     publishDate: $('.entry-date.published').attr('datetime'),

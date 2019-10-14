@@ -87,7 +87,6 @@ exports.scrapeRecipe = ($) => {
   const imageUrl = $('.wp-post-image').attr('src');
   return {
     ...recipe,
-    sourceName: 'Smitten Kitchen',
     imageUrl: removeQueryString(imageUrl),
     thumbnailUrl: imageUrl,
     publishDate: $('.entry-date.published').attr('datetime'),

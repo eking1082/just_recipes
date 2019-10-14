@@ -1,48 +1,7 @@
-const rp = require('request-promise');
-const moment = require('moment');
-const cheerio = require('cheerio');
-const removeQueryString = require('../../utils/url');
+const { removeQueryString } = require('../utils/url');
 
-const BASE_INDEX = 'https://thepioneerwoman.com/cooking/';
-
-const getLatestPost = ($) => {
-  const latestPost = $('.latest-post__post-container');
-  const dateString = latestPost.find('.latest-post__byline')
-    .contents()
-    .last()
-    .text()
-    .trim();
-
-  return {
-    date: moment(dateString, 'on MMMM DD, YYYY'),
-    url: latestPost.find('a').first().attr('href'),
-  };
-};
-
-const parsePost = (post) => ({
-  date: moment(post.find('.dateline').text(), 'MMMM DD, YYYY'),
-  url: post.find('a').attr('href'),
-});
-
-// maybe use https://smittenkitchen.com/YYYY/?infinity=scrolling
-exports.scrapeRecipeIndex = (pageUrl = BASE_INDEX) => rp({
-  uri: pageUrl,
-  transform(body) {
-    return cheerio.load(body);
-  },
-}).then(($) => {
-  const posts = $('.container.category-with-latest-filter-results')
-    .find('.post-card-vertical.category-cooking')
-    .map((i, post) => parsePost($(post)))
-    .get();
-
-  if (pageUrl === BASE_INDEX) posts.unshift(getLatestPost($));
-
-  return {
-    recipes: posts.filter((post) => !post.url.includes('video')),
-    nextPageUrl: $('.next').attr('href'),
-  };
-});
+exports.baseUrl = 'https://smittenkitchen.com/';
+exports.sourceName = 'Smitten Kitchen';
 
 const oldSmitten = ($) => {
   const body = $('.entry-content').children('p');
@@ -91,7 +50,7 @@ const newSmitten = ($) => {
     directions: [],
     time: {},
   };
-  recipe.name = $('.jetpack-recipe-title').text();
+  recipe.name = $('.jetpack-recipe-title').text().trim();
 
   $('.jetpack-recipe-ingredients')
     .children('ul')
@@ -117,7 +76,6 @@ const newSmitten = ($) => {
   }
 
   recipe.time.total = $('time[itemprop=totalTime]').text().replace('Time: ', '');
-
   recipe.servings = $('.jetpack-recipe-servings').text().replace('Servings: ', '');
 
   return recipe;

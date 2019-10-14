@@ -8,10 +8,10 @@ if (!pageUrl) {
 }
 
 const domain = url.parse(pageUrl).host.split('.')[0];
-const scraper = require('./scrapers')(domain);
+const scraper = require('../scrapers')(domain);
 
 rp(pageUrl)
   .then((html) => scraper.scrapeRecipe(pageUrl, html))
-  .then(({ message, recipeRecord }) => console.log(message, recipeRecord))
+  .then((recipe) => console.log(recipe))
   .catch((err) => console.error(err))
   .finally(() => process.exit());

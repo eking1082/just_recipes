@@ -1,5 +1,5 @@
+const url = require('url');
 const cheerio = require('cheerio');
-const { Recipe } = require('../../models');
 
 /* eslint-disable global-require */
 const domains = {
@@ -32,15 +32,19 @@ const domains = {
 };
 /* eslint-enable global-require */
 
-const discoverResources = (buffer) => {
+const discoverResources = (buffer, queueItem) => {
   const $ = cheerio.load(buffer.toString('utf8'));
-  return $('a[href]').map((i, el) => $(el).attr('href')).get();
+  return $('a[href]')
+    .map((i, el) => $(el).attr('href'))
+    .filter((i, el) => url.parse(el).pathname !== queueItem.uriPath)
+    .get();
 };
 
 const scraper = (domain) => ({
   baseUrl: domains[domain].baseUrl,
+  sourceName: domains[domain].sourceName,
   discoverResources: domains[domain].discoverResources || discoverResources,
-  pathWhitelist: domains[domain].pathWhitelist,
+  pathWhitelist: domains[domain].pathWhitelist || [],
 
   pathWhitelisted: (path) =>
     domains[domain].pathWhitelist.some((wlPath) => path.startsWith(`/${wlPath}/`)),
@@ -48,26 +52,11 @@ const scraper = (domain) => ({
   scrapeRecipe: async (url, html) => {
     const $ = cheerio.load(html);
     const { sourceName, ...recipe } = domains[domain].scrapeRecipe($);
-    if (!recipe.name || recipe.ingredients.length === 0 || recipe.directions.length === 0) {
-      return { status: 'no_recipe', message: `No recipe found - ${url}` };
-    }
 
-    const servingsMatch = recipe.servings.match(/[0-9]+/);
-    recipe.servings = servingsMatch ? servingsMatch[0] : null;
+    if (recipe.servings) recipe.servings = parseInt(recipe.servings.match(/[0-9]+/)[0]);
     recipe.source = { domain, url, name: sourceName };
 
-    try {
-      await Recipe.findOneAndDelete({ 'source.url': url });
-      const recipeRecord = new Recipe(recipe);
-      await recipeRecord.save();
-
-      return { status: 'success', message: `Recipe saved - ${recipeRecord.name}`, recipeRecord };
-    } catch (e) {
-      if (e.name === 'ValidationError') {
-        return { status: 'failed', message: `${e.message} - ${url}` };
-      }
-      throw e;
-    }
+    return recipe;
   },
 });
 

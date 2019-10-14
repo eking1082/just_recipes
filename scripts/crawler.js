@@ -14,6 +14,7 @@ const reScrape = process.argv.includes('-r');
 const verbose = process.argv.includes('-v');
 const clean = process.argv.includes('--clean');
 const ignoreWhitelist = process.argv.includes('--ignore-wl');
+const saveRecipes = !process.argv.includes('--no-save');
 if (!domain) {
   console.log('Please provide a domain to crawl'.red);
   process.exit();
@@ -22,7 +23,7 @@ if (!domain) {
 let scraper;
 try {
   // eslint-disable-next-line global-require
-  scraper = require('./scrapers')(domain);
+  scraper = require('../scrapers')(domain);
 } catch (e) {
   console.log('Provided domain is not supported'.red);
   process.exit();
@@ -41,7 +42,6 @@ let progress;
 const crawler = new Crawler(scraper.baseUrl);
 crawler.discoverResources = scraper.discoverResources;
 crawler.timeout = 5000;
-// crawler.maxDepth = 2;
 
 const addErrorEventHandler = (eventName) => {
   crawler.on(eventName, (queueItem, e) => {
@@ -116,16 +116,31 @@ crawler.on('fetchcomplete', async (queueItem, responseBuffer) => {
     }
   }
 
-  const { status, message } = await scraper.scrapeRecipe(queueItem.url, responseBuffer.toString());
-  if (status === 'success') {
-    progress.interrupt(message.green);
+  try {
+    let recipe = await scraper.scrapeRecipe(queueItem.url, responseBuffer.toString());
+    if (!recipe.name || recipe.ingredients.length === 0 || recipe.directions.length === 0) {
+      progress.interrupt(`No recipe found - ${queueItem.url}`);
+      return;
+    }
+
+    if (saveRecipes) {
+      await Recipe.findOneAndDelete({ 'source.url': queueItem.url });
+      recipe = new Recipe(recipe);
+      await recipe.save();
+
+      progress.interrupt(`Recipe saved - ${recipe.name}`.green);
+    } else {
+      progress.interrupt(`Recipe found - ${recipe.name} - ${queueItem.url}`.green);
+    }
+
     state.pageStats.recipeCount++;
     state.pathsWithRecipes.push(path);
-  } else if (status === 'failed') {
-    progress.interrupt(message.red);
-    state.pageStats.failedCount++;
-  } else if (status === 'no_recipe') {
-    progress.interrupt(message);
+  } catch (e) {
+    if (e.name === 'ValidationError') {
+      progress.interrupt(`${e.message} - ${queueItem.url}`.red);
+      state.pageStats.failedCount++;
+    }
+    console.error(e);
   }
 });
 

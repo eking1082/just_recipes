@@ -1,4 +1,4 @@
-const { removeQueryString } = require('../../utils/url');
+const { removeQueryString } = require('../utils/url');
 
 exports.baseUrl = 'https://thepioneerwoman.com/';
 exports.sourceName = 'The Pioneer Woman';

@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const { isValidUrl } = require('../utils/url');
 
@@ -5,6 +6,16 @@ const arrayNotEmpty = [(v) => v.length > 0, 'Path `{PATH}` must not be empty.'];
 
 const recipeSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
+  path: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    validate: {
+      validator: (path) => path === _.kebabCase(path),
+      message: 'path: {VALUE} must be kebab case',
+    },
+  },
   source: {
     url: {
       type: String,
@@ -34,18 +45,16 @@ const recipeSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid URL',
     },
   },
-  ingredients: [{
-    type: String,
+  ingredients: {
+    type: [String],
     required: true,
-    trim: true,
     validate: arrayNotEmpty,
-  }],
-  directions: [{
-    type: String,
+  },
+  directions: {
+    type: [String],
     required: true,
-    trim: true,
     validate: arrayNotEmpty,
-  }],
+  },
   time: {
     prep: { type: String, trim: true },
     cook: { type: String, trim: true },

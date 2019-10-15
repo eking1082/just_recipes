@@ -1,4 +1,5 @@
 require('colors');
+const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
@@ -125,6 +126,7 @@ crawler.on('fetchcomplete', async (queueItem, responseBuffer) => {
 
     if (saveRecipes) {
       await Recipe.findOneAndDelete({ 'source.url': queueItem.url });
+      recipe.path = _.kebabCase(`${recipe.name}-${scraper.abbreviatedSourceName}`);
       recipe = new Recipe(recipe);
       await recipe.save();
 

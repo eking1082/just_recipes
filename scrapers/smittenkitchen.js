@@ -2,6 +2,7 @@ const { removeQueryString } = require('../utils/url');
 
 exports.baseUrl = 'https://smittenkitchen.com/';
 exports.sourceName = 'Smitten Kitchen';
+exports.abbreviatedSourceName = 'sk';
 
 const oldSmitten = ($) => {
   const body = $('.entry-content').children('p');

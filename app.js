@@ -123,8 +123,8 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-app.get('/search', recipeController.search);
-app.get('/recipe', recipeController.recipe);
+app.get('/recipe/search', recipeController.search);
+app.get('/recipe/:path', recipeController.recipe);
 
 /**
  * OAuth authentication routes. (Sign in)

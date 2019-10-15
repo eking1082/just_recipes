@@ -3,10 +3,10 @@ mixin recipeCard(recipe)
     .card
       .card-header.text-center
         h5.card-title
-          a.text-dark(href=`/recipe?id=${recipe.id}`) #{recipe.name}
+          a.text-dark(href=`/recipe/${recipe.path}`) #{recipe.name}
         .card-subtitle
           a.text-muted(href=recipe.source.url target='_blank') #{recipe.source.name}
-      a(href=`/recipe?id=${recipe.id}`)
+      a(href=`/recipe/${recipe.path}`)
         img.card-img-top(src=recipe.thumbnailUrl alt=recipe.name)
       .card-body
         ul

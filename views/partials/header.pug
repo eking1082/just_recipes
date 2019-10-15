@@ -3,7 +3,7 @@
     a.navbar-brand(href='/')
       i.fas.fa-utensils
       | Just Recipes
-    form.form-inline.my-2.my-lg-0.flex-fill(action='search')
+    form.form-inline.my-2.my-lg-0.flex-fill(action='recipe/search')
       .input-group.w-100
         input.form-control(value=(query) ? query : undefined type='text' name='q' placeholder='Find some recipes...')
         span.input-group-btn

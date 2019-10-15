@@ -1,5 +1,6 @@
 exports.baseUrl = 'https://grannysvitalvittles.com/';
 exports.sourceName = 'Granny\'s Vital Vittles';
+exports.abbreviatedSourceName = 'gvv';
 
 exports.scrapeRecipe = ($) => {
   const ingredients = $('.ingredients-list')

@@ -48,9 +48,9 @@ exports.search = (req, res) => {
  * Recipe
  */
 exports.recipe = (req, res) => {
-  const { id } = req.query;
+  const { path } = req.params;
 
-  Recipe.findById(id)
+  Recipe.findOne({ path })
     .then((recipe) => {
       res.render('recipes/recipe', {
         title: recipe.name,

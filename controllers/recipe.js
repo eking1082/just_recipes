@@ -42,3 +42,19 @@ exports.search = (req, res) => {
       });
     });
 };
+
+/**
+ * GET /recipe
+ * Recipe
+ */
+exports.recipe = (req, res) => {
+  const { id } = req.query;
+
+  Recipe.findById(id)
+    .then((recipe) => {
+      res.render('recipes/recipe', {
+        title: recipe.name,
+        recipe,
+      });
+    });
+};

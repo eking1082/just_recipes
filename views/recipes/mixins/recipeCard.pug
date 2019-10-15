@@ -1,11 +1,13 @@
-mixin recipe(recipe)
+mixin recipeCard(recipe)
   .grid-item.col-xs-12.col-md-6.col-lg-4.p-1
     .card
       .card-header.text-center
-        h5.card-title #{recipe.name}
+        h5.card-title
+          a.text-dark(href=`/recipe?id=${recipe.id}`) #{recipe.name}
         .card-subtitle
           a.text-muted(href=recipe.source.url target='_blank') #{recipe.source.name}
-      img.card-img-top(src=recipe.thumbnailUrl alt=recipe.name)
+      a(href=`/recipe?id=${recipe.id}`)
+        img.card-img-top(src=recipe.thumbnailUrl alt=recipe.name)
       .card-body
         ul
           each ingredient in recipe.ingredients

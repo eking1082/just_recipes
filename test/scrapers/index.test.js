@@ -23,18 +23,20 @@ describe('#discoverResources', () => {
 });
 
 const commonRecipeTest = (scraper, domainConstants) => {
-  it('should have the correct configuration', () => {
-    expect(scraper.baseUrl).to.equal(domainConstants.baseUrl);
-    expect(scraper.sourceName).to.equal(domainConstants.sourceName);
-    expect(scraper.pathWhitelist).to.be.an('array');
-  });
+  describe(`${domainConstants.sourceName} Scraper`, () => {
+    it('should have the correct configuration', () => {
+      expect(scraper.baseUrl).to.equal(domainConstants.baseUrl);
+      expect(scraper.sourceName).to.equal(domainConstants.sourceName);
+      expect(scraper.pathWhitelist).to.be.an('array');
+    });
 
-  describe('#scrapeRecipe', () => {
-    domainConstants.recipes.forEach(({ url, expectedRecipe }) => {
-      it(`should fetch the expected recipe from ${url}`, async () => {
-        const html = await rp(url);
-        const recipe = await scraper.scrapeRecipe(url, html);
-        expect(recipe).to.deep.equal(expectedRecipe);
+    describe('#scrapeRecipe', () => {
+      domainConstants.recipes.forEach(({ url, expectedRecipe }) => {
+        it(`should fetch the expected recipe from ${url}`, async () => {
+          const html = await rp(url);
+          const recipe = await scraper.scrapeRecipe(url, html);
+          expect(recipe).to.deep.equal(expectedRecipe);
+        });
       });
     });
   });

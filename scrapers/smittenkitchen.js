@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { removeQueryString } = require('../utils/url');
 
 exports.baseUrl = 'https://smittenkitchen.com/';
@@ -14,7 +15,7 @@ const oldSmitten = ($) => {
   const recipe = {
     ingredients: [],
     directions: [],
-    publishDate: $('.entry-date.published').attr('datetime'),
+    publishDate: moment($('.entry-date.published').attr('datetime')),
   };
 
   body.each((i, el) => {
@@ -90,6 +91,6 @@ exports.scrapeRecipe = ($) => {
     ...recipe,
     imageUrl: removeQueryString(imageUrl),
     thumbnailUrl: imageUrl,
-    publishDate: $('.entry-date.published').attr('datetime'),
+    publishDate: moment($('.entry-date.published').attr('datetime')),
   };
 };

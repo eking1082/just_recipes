@@ -1,8 +1,12 @@
 const fs = require('fs');
 const rp = require('request-promise');
 const glob = require('glob');
-const { expect } = require('chai');
+const chai = require('chai');
+const chaiExclude = require('chai-exclude');
 const scraperFactory = require('../../scrapers');
+
+const { expect } = chai;
+chai.use(chaiExclude);
 
 describe('#pathWhitelisted', () => {
   it('should return true for whitelisted path', () => {
@@ -31,11 +35,12 @@ const commonRecipeTest = (scraper, domainConstants) => {
     });
 
     describe('#scrapeRecipe', () => {
-      domainConstants.recipes.forEach(({ url, expectedRecipe }) => {
+      domainConstants.recipes.forEach(({ url, expectedRecipe, publishDate }) => {
         it(`should fetch the expected recipe from ${url}`, async () => {
           const html = await rp(url);
           const recipe = await scraper.scrapeRecipe(url, html);
-          expect(recipe).to.deep.equal(expectedRecipe);
+          expect(recipe).excluding('publishDate').to.deep.equal(expectedRecipe);
+          if (publishDate) expect(recipe.publishDate.format('YYYY-MM-DD')).to.equal(publishDate);
         });
       });
     });

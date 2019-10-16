@@ -4,10 +4,10 @@ module.exports = {
   domain: 'smittenkitchen',
   recipes: [{
     url: 'https://smittenkitchen.com/2014/12/endives-with-oranges-and-almonds/',
+    publishDate: '2014-12-15',
     expectedRecipe: {
       name: 'Endives with Oranges and Almonds',
       servings: 4,
-      publishDate: '2014-12-15T11:50:02-05:00',
       imageUrl: 'https://smittenkitchendotcom.files.wordpress.com/2014/12/endives-with-oranges-and-almonds1.jpg',
       thumbnailUrl: 'https://smittenkitchendotcom.files.wordpress.com/2014/12/endives-with-oranges-and-almonds1.jpg?w=750',
       source: {
@@ -34,10 +34,10 @@ module.exports = {
     },
   }, {
     url: 'https://smittenkitchen.com/2017/08/blackberry-blueberry-crumb-pie/',
+    publishDate: '2017-08-11',
     expectedRecipe: {
       name: 'Blackberry-Blueberry Crumb Pie',
       servings: 8,
-      publishDate: '2017-08-11T12:22:47-05:00',
       imageUrl: 'https://smittenkitchendotcom.files.wordpress.com/2017/08/blackberry-blueberry-crumb-pie.jpg',
       thumbnailUrl: 'https://smittenkitchendotcom.files.wordpress.com/2017/08/blackberry-blueberry-crumb-pie.jpg?w=750',
       source: {
@@ -88,10 +88,10 @@ module.exports = {
     },
   }, {
     url: 'https://smittenkitchen.com/2017/08/cheesecake-bars-with-all-the-berries/',
+    publishDate: '2017-08-18',
     expectedRecipe: {
       name: 'Cheesecake Bars with All The Berries',
       servings: 24,
-      publishDate: '2017-08-18T12:07:35-05:00',
       imageUrl: 'https://smittenkitchendotcom.files.wordpress.com/2017/08/cheesecake-bars-with-all-the-berries.jpg',
       thumbnailUrl: 'https://smittenkitchendotcom.files.wordpress.com/2017/08/cheesecake-bars-with-all-the-berries.jpg?w=750',
       source: {
@@ -131,6 +131,7 @@ module.exports = {
     },
   }, {
     url: 'https://smittenkitchen.com/2009/05/broccoli-slaw/',
+    publishDate: '2009-05-11',
     expectedRecipe: {
       name: 'Broccoli Slaw',
       ingredients: [
@@ -151,7 +152,6 @@ module.exports = {
         'Should keep up to a week in the fridge, if you don’t have any pregnant women nearby.',
         'Variation: I bet this slaw would be equally good with cauliflower. I might use dried currants instead of cranberries, walnuts instead of almonds and maybe even some celery slices thrown in. Have fun with it.',
       ],
-      publishDate: '2009-05-11T14:22:16-05:00',
       imageUrl: 'https://smittenkitchendotcom.files.wordpress.com/2009/05/broccoli-slaw.jpg',
       thumbnailUrl: 'https://smittenkitchendotcom.files.wordpress.com/2009/05/broccoli-slaw.jpg?w=753',
       source: {

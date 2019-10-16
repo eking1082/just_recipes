@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { removeQueryString } = require('../utils/url');
 
 exports.baseUrl = 'https://thepioneerwoman.com/';
@@ -32,6 +33,6 @@ exports.scrapeRecipe = ($) => {
     thumbnailUrl: $('.recipe-summary-thumbnail').find('img').first().attr('src'),
     name: $('.recipe-title').first().text(),
     servings: times.last().text(),
-    publishDate: $('.entry-date.published').attr('datetime'),
+    publishDate: moment($('.entry-date.published').attr('datetime')),
   };
 };

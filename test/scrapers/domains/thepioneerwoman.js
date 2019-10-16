@@ -4,10 +4,10 @@ module.exports = {
   domain: 'thepioneerwoman',
   recipes: [{
     url: 'https://thepioneerwoman.com/cooking/french-dip-sandwiches/',
+    publishDate: '2016-05-16',
     expectedRecipe: {
       name: 'French Dip Sandwiches',
       servings: 10,
-      publishDate: '2016-05-16T07:41:54-06:00',
       imageUrl: 'https://thepioneerwoman.com/wp-content/uploads/2016/05/dsc_0580.jpg',
       thumbnailUrl: 'https://tastykitchen.com/recipes/wp-content/uploads/sites/2/2016/05/DSC_0580-420x280.jpg',
       source: {

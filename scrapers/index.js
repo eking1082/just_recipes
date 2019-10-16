@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 
 /* eslint-disable global-require */
 const domains = {
-  // '101cookbooks': require('./101cookbooks'),
+  '101cookbooks': require('./101cookbooks'),
   // allrecipes: require('./allrecipes'),
   // ambitiouskitchen: require('./ambitiouskitchen'),
   // bbc: require('./bbc'),

@@ -44,6 +44,7 @@ const discoverResources = (buffer, queueItem) => {
 const scraper = (domain) => ({
   baseUrl: domains[domain].baseUrl,
   sourceName: domains[domain].sourceName,
+  abbreviatedSourceName: domains[domain].abbreviatedSourceName,
   discoverResources: domains[domain].discoverResources || discoverResources,
   pathWhitelist: domains[domain].pathWhitelist || [],
 

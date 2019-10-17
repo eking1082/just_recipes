@@ -5,7 +5,12 @@ const { isValidUrl } = require('../utils/url');
 const arrayNotEmpty = [(v) => v.length > 0, 'Path `{PATH}` must not be empty.'];
 
 const recipeSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+    get: (name) => name.replace('-', '\u2011'),
+  },
   path: {
     type: String,
     required: true,

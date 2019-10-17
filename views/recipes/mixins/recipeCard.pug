@@ -2,10 +2,10 @@ mixin recipeCard(recipe)
   .grid-item.col-xs-12.col-md-6.col-lg-4.p-1
     .card.border-secondary
       .card-header.text-center
-        h5.card-title
-          a.text-dark.no-underline(href=`/recipe/${recipe.path}`) #{recipe.name}
+        h5.card-title.text-dark #{recipe.name}
+          //- a.text-dark.no-underline(href=`/recipe/${recipe.path}`) #{recipe.name}
         h6.card-subtitle
-          a.text-muted.no-underline(href=recipe.source.url target='_blank') #{recipe.source.name}
+          a.text-muted.no-underline(href=recipe.source.url target='_blank' data-toggle='tooltip' data-title=`Full recipe on ${recipe.source.name}`) #{recipe.source.name}
       a(href=`/recipe/${recipe.path}`)
         img.card-img.rounded-0(src=recipe.thumbnailUrl alt=recipe.name)
       .card-body.text-lowercase.p-3

@@ -161,3 +161,12 @@ textarea {
 .no-underline {
   text-decoration: none !important;
 }
+
+.tooltip-inner {
+  background-color: $dark;
+  max-width: 150px;
+}
+
+.bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+  border-bottom-color: $dark;
+}

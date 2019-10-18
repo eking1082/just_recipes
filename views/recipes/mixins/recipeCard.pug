@@ -3,11 +3,9 @@ mixin recipeCard(recipe)
     .card.border-secondary
       .card-header.text-center
         h5.card-title.text-dark #{recipe.name}
-          //- a.text-dark.no-underline(href=`/recipe/${recipe.path}`) #{recipe.name}
         h6.card-subtitle
           a.text-muted.no-underline(href=recipe.source.url target='_blank' data-toggle='tooltip' data-title=`Full recipe on ${recipe.source.name}`) #{recipe.source.name}
-      a(href=`/recipe/${recipe.path}`)
-        img.card-img.rounded-0(src=recipe.thumbnailUrl alt=recipe.name)
+      img.card-img.rounded-0(src=recipe.thumbnailUrl alt=recipe.name)
       .card-body.text-lowercase.p-3
         ul.list-group.list-group-flush
           each ingredient in recipe.ingredients

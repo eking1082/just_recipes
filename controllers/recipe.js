@@ -1,22 +1,25 @@
 const _ = require('lodash');
 const { Recipe } = require('../models');
 
-const OFFSET_DEFAULT = 0;
-const LIMIT_DEFAULT = 20;
-const MAX_LIMIT = 50;
+const findPopular = (page, keyword) => {
+  page = page || 1;
+  const limit = 20;
+  const offset = (page - 1) * limit;
 
-const findPopular = (keyword, offset, limit) =>
-  Recipe.find(keyword ? { name: { $regex: keyword, $options: 'i' } } : {})
+  return Recipe.find(keyword ? { name: { $regex: keyword, $options: 'i' } } : {})
     .sort({ popularityScore: 'desc', updatedAt: 'desc' })
-    .skip(offset || OFFSET_DEFAULT)
-    .limit(Math.min((limit || LIMIT_DEFAULT), MAX_LIMIT));
+    .skip(offset)
+    .limit(limit);
+};
 
 /**
  * GET /
  * Home page.
  */
 exports.index = (req, res) => {
-  findPopular()
+  const { page } = req.params;
+
+  findPopular(page)
     .then((recipes) => {
       res.render('recipes', { recipes });
     });
@@ -33,7 +36,7 @@ exports.search = (req, res) => {
     l: limit,
   } = req.query;
 
-  findPopular(keyword, offset, limit)
+  findPopular(offset, limit, keyword)
     .then((recipes) => {
       res.render('recipes', {
         title: _.startCase(keyword),

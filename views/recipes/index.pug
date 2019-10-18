@@ -9,3 +9,10 @@ block content
         +recipeCard(recipe)
   else
     h5 No recipes found that match "#{keyword}"...
+
+  .infinite-scroll-request.text-center.m-3
+    .spinner-grow.spinner-grow-sm.text-secondary(role='status')
+    .spinner-grow.spinner-grow-sm.text-secondary(role='status')
+    .spinner-grow.spinner-grow-sm.text-secondary(role='status')
+
+  a.pagination__next(hidden href="/recipes/2")

@@ -69,9 +69,20 @@ const recipeSchema = new mongoose.Schema({
     total: { type: String, trim: true },
   },
   servings: Number,
-  popularityScore: { type: Number, default: 0 },
   publishDate: Date,
 }, { timestamps: true });
+
+recipeSchema.index({
+  name: 'text',
+  'source.name': 'text',
+  ingredients: 'text',
+}, {
+  weights: {
+    name: 3,
+    'source.name': 2,
+    ingredients: 1,
+  },
+});
 
 const Recipe = mongoose.model('Recipe', recipeSchema);
 

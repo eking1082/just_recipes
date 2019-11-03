@@ -7,8 +7,10 @@ $(document).ready(() => {
     stagger: 30,
     transitionDuration: 0,
   });
+  $grid.imagesLoaded().progress(() => $grid.masonry('layout'));
 
   const msnry = $grid.data('masonry');
+
   $grid.infiniteScroll({
     path: '.pagination__next',
     append: '.grid-item',

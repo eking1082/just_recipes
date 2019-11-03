@@ -1,13 +1,28 @@
 const _ = require('lodash');
 const { Recipe } = require('../models');
 
-const findPopular = (page, keyword) => {
+const getPagingParams = (page) => {
   page = page || 1;
   const limit = 20;
   const offset = (page - 1) * limit;
 
-  return Recipe.find(keyword ? { name: { $regex: keyword, $options: 'i' } } : {})
-    .sort({ popularityScore: 'desc', updatedAt: 'desc' })
+  return { limit, offset };
+};
+
+const find = (page) => {
+  const { offset, limit } = getPagingParams(page);
+
+  return Recipe.find()
+    .sort({ updatedAt: 'desc' })
+    .skip(offset)
+    .limit(limit);
+};
+
+const findByKeyword = (page, keyword) => {
+  const { offset, limit } = getPagingParams(page);
+
+  return Recipe.find({ $text: { $search: keyword } }, { score: { $meta: 'textScore' } })
+    .sort({ score: { $meta: 'textScore' } })
     .skip(offset)
     .limit(limit);
 };
@@ -17,47 +32,23 @@ const findPopular = (page, keyword) => {
  * Home page.
  */
 exports.index = (req, res) => {
-  const { page } = req.params;
-
-  findPopular(page)
-    .then((recipes) => {
-      res.render('recipes', { recipes });
-    });
-};
-
-/**
- * GET /search
- * Recipe search
- */
-exports.search = (req, res) => {
   const {
+    p: page,
     q: keyword,
-    o: offset,
-    l: limit,
   } = req.query;
 
-  findPopular(offset, limit, keyword)
-    .then((recipes) => {
-      res.render('recipes', {
-        title: _.startCase(keyword),
-        keyword,
-        recipes,
-      });
-    });
-};
+  const query = keyword ? findByKeyword(page, keyword) : find(page);
+  query.then((recipes) => {
+    const renderOptions = {
+      recipes,
+      lastPage: recipes.length < 20,
+    };
 
-/**
- * GET /recipe
- * Recipe
- */
-exports.recipe = (req, res) => {
-  const { path } = req.params;
+    if (keyword) {
+      renderOptions.title = _.startCase(keyword);
+      renderOptions.keyword = keyword;
+    }
 
-  Recipe.findOne({ path })
-    .then((recipe) => {
-      res.render('recipes/recipe', {
-        title: recipe.name,
-        recipe,
-      });
-    });
+    res.render('recipes', renderOptions);
+  });
 };

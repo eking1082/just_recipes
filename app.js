@@ -108,6 +108,8 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
  * Primary app routes.
  */
 app.get('/', recipeController.index);
+app.get('/recipes', recipeController.index);
+app.get('/recipes/page/:page', recipeController.index);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
@@ -126,9 +128,8 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-app.get('/recipes/:page', recipeController.index);
-app.get('/recipes/search', recipeController.search);
-// app.get('/recipe/:path', recipeController.recipe);
+// app.get('/recipes/search', recipeController.search);
+// app.get('/recipes/search/page/:page', recipeController.search);
 
 /**
  * OAuth authentication routes. (Sign in)

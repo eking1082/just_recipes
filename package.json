@@ -83,6 +83,7 @@
     "mocha": "^6.2.1",
     "nodemon": "^1.19.3",
     "nyc": "^14.1.1",
+    "pryjs": "^1.0.3",
     "sinon": "^7.5.0",
     "sinon-mongoose": "^2.3.0",
     "supertest": "^4.0.2"

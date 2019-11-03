@@ -7,8 +7,8 @@ nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-primary.py-3
       span.sr-only Toggle navigation
       span.navbar-toggler-icon
     .collapse.navbar-collapse
-      form.form-inline.my-2.my-lg-0.mx-4.flex-fill(action='recipes/search')
-        input.form-control.mr-sm-2.flex-fill(value=(query) ? query : undefined type='text' name='q' placeholder='Find some recipes...')
+      form.form-inline.my-2.my-lg-0.mx-4.flex-fill(action='recipes')
+        input.form-control.mr-sm-2.flex-fill(value=(keyword) ? keyword : undefined type='text' name='q' placeholder='Find some recipes...')
         button.btn.btn-secondary.my-2.my-sm-0(type='submit') Search
       ul.navbar-nav
         if !user

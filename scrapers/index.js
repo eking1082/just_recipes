@@ -57,6 +57,7 @@ const scraper = (domain) => ({
 
     if (recipe.servings) recipe.servings = parseInt(recipe.servings.match(/[0-9]+/)[0]);
     recipe.source = { domain, url, name: domains[domain].sourceName };
+    if (recipe.ingredients) recipe.ingredients = recipe.ingredients.filter((e) => e.length <= 200);
 
     return recipe;
   },

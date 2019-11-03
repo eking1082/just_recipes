@@ -5,6 +5,7 @@ exports.baseUrl = 'https://smittenkitchen.com/';
 exports.sourceName = 'Smitten Kitchen';
 exports.abbreviatedSourceName = 'sk';
 
+// these pages are inconsistently formatted and difficult to scrape
 const oldSmitten = ($) => {
   const body = $('.entry-content').children('p');
   let ingredientSwitch = false;
@@ -57,7 +58,7 @@ const newSmitten = ($) => {
   $('.jetpack-recipe-ingredients')
     .children('ul')
     .first()
-    .children()
+    .children('li')
     .each((i, el) => {
       recipe.ingredients.push($(el).text());
     });
@@ -84,8 +85,9 @@ const newSmitten = ($) => {
 };
 
 exports.scrapeRecipe = ($) => {
-  const recipe = $('.jetpack-recipe').length ? newSmitten($) : oldSmitten($);
+  if (!$('.jetpack-recipe').length) return {}; // ignore old recipes
 
+  const recipe = newSmitten($);
   const imageUrl = $('.wp-post-image').attr('src');
   return {
     ...recipe,

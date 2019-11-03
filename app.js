@@ -128,8 +128,6 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-// app.get('/recipes/search', recipeController.search);
-// app.get('/recipes/search/page/:page', recipeController.search);
 
 /**
  * OAuth authentication routes. (Sign in)
@@ -163,5 +161,7 @@ app.listen(app.get('port'), () => {
   console.log('App is running at http://localhost:%d in %s mode', app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });
+
+app.use((req, res, next) => res.status(404).render('404'));
 
 module.exports = app;

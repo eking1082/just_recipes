@@ -21,11 +21,12 @@ nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-primary.py-3
                 img(src=user.profile.picture)
               else
                 img(src=user.gravatar(60))
-              span= user.profile.name || user.email || user.id
               i.caret
             ul.dropdown-menu
               li.dropdown-item
-                a(href='/account') My Account
-              li.divider.dropdown-item
+                a.text-muted(href='/account') My Account
               li.dropdown-item
-                a(href='/logout') Logout
+                a.text-muted(href='/favorites') My Favorites
+              .dropdown-divider
+              li.dropdown-item
+                a.text-muted(href='/logout') Logout

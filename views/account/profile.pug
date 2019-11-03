@@ -92,9 +92,9 @@ block content
       if user.google
         p.mb-1: a.text-danger(href='/account/unlink/google') Unlink your Google account
       else
-        p.mb-1: a(href='/auth/google') Link your Google account
+        p.mb-1: a.text-muted(href='/auth/google') Link your Google account
     .offset-sm-3.col-md-7.pl-2
       if user.facebook
         p.mb-1: a.text-danger(href='/account/unlink/facebook') Unlink your Facebook account
       else
-        p.mb-1: a(href='/auth/facebook') Link your Facebook account
+        p.mb-1: a.text-muted(href='/auth/facebook') Link your Facebook account

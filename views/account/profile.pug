@@ -94,7 +94,7 @@ block content
       else
         p.mb-1: a.text-muted(href='/auth/google') Link your Google account
     .offset-sm-3.col-md-7.pl-2
-      if user.facebook
-        p.mb-1: a.text-danger(href='/account/unlink/facebook') Unlink your Facebook account
+      if user.github
+        p.mb-1: a.text-danger(href='/account/unlink/github') Unlink your GitHub account
       else
-        p.mb-1: a.text-muted(href='/auth/facebook') Link your Facebook account
+        p.mb-1: a.text-muted(href='/auth/github') Link your GitHub account

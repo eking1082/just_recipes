@@ -340,9 +340,9 @@ exports.getVerifyEmail = (req, res, next) => {
     });
     const mailOptions = {
       to: req.user.email,
-      from: 'hackathon@starter.com',
-      subject: 'Please verify your email address on Hackathon Starter',
-      text: `Thank you for registering with hackathon-starter.\n\n
+      from: 'no_reply@evancodes.io',
+      subject: 'Please verify your email address on Just Recipes',
+      text: `Thank you for registering with Just Recipes.\n\n
         This verify your email address please click on the following link, or paste this into your browser:\n\n
         http://${req.headers.host}/account/verify/${token}\n\n
         \n\n
@@ -353,6 +353,7 @@ exports.getVerifyEmail = (req, res, next) => {
         req.flash('info', { msg: `An e-mail has been sent to ${req.user.email} with further instructions.` });
       })
       .catch((err) => {
+        console.log(process.env.SENDGRID_USER, process.env.SENDGRID_PASSWORD);
         if (err.message === 'self signed certificate in certificate chain') {
           console.log('WARNING: Self signed certificate in certificate chain. Retrying with the self signed certificate. Use a valid certificate if in production.');
           transporter = nodemailer.createTransport({
@@ -429,8 +430,8 @@ exports.postReset = (req, res, next) => {
     });
     const mailOptions = {
       to: user.email,
-      from: 'hackathon@starter.com',
-      subject: 'Your Hackathon Starter password has been changed',
+      from: 'no_reply@evancodes.io',
+      subject: 'Your Just Recipes password has been changed',
       text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`,
     };
     return transporter.sendMail(mailOptions)
@@ -523,8 +524,8 @@ exports.postForgot = (req, res, next) => {
     });
     const mailOptions = {
       to: user.email,
-      from: 'hackathon@starter.com',
-      subject: 'Reset your password on Hackathon Starter',
+      from: 'no_reply@evancodes.io',
+      subject: 'Reset your password on Just Recipes',
       text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
         Please click on the following link, or paste this into your browser to complete the process:\n\n
         http://${req.headers.host}/reset/${token}\n\n

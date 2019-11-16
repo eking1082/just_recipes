@@ -1,15 +1,15 @@
 nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-primary.py-3
   .container
-    a.navbar-brand(href='/')
-      i.fas.fa-utensils
+    a.navbar-brand.font-weight-bold(href='/')
+      i.fas.fa-utensils.fa-lg.mr-3
       | Just Recipes
     button.navbar-toggler(type='button' data-toggle='collapse' data-target='.navbar-collapse')
       span.sr-only Toggle navigation
       span.navbar-toggler-icon
     .collapse.navbar-collapse
-      form.form-inline.my-2.my-lg-0.mx-4.flex-fill(action='recipes')
+      form.form-inline.my-2.my-lg-0.mx-3.flex-fill(action='recipes')
         input.form-control.mr-sm-2.flex-fill(value=(keyword) ? keyword : undefined type='text' name='q' placeholder='Find some recipes...')
-        button.btn.btn-secondary.my-2.my-sm-0(type='submit') Search
+        button.btn.btn-secondary.font-weight-bold.my-2.my-sm-0(type='submit') Search
       ul.navbar-nav
         if !user
           li.nav-item(class=(title === 'Login') ? 'active' : undefined)
@@ -17,10 +17,7 @@ nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-primary.py-3
         else
           li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
             a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')
-              if user.profile.picture
-                img(src=user.profile.picture)
-              else
-                img(src=user.gravatar(60))
+              i.fas.fa-user.fa-lg
               i.caret
             ul.dropdown-menu
               li.dropdown-item

@@ -117,30 +117,4 @@ describe('User Model', () => {
       done();
     });
   });
-
-  it('should generate gravatar without email and size', () => {
-    const UserMock = sinon.mock(new User({}));
-    const user = UserMock.object;
-
-    const gravatar = user.gravatar();
-    expect(gravatar.includes('gravatar.com')).to.equal(true);
-  });
-
-  it('should generate gravatar with size', () => {
-    const UserMock = sinon.mock(new User({}));
-    const user = UserMock.object;
-    const size = 300;
-
-    const gravatar = user.gravatar(size);
-    expect(gravatar.includes(`s=${size}`)).to.equal(true);
-  });
-
-  it('should generate gravatar with email', () => {
-    const UserMock = sinon.mock(new User({ email: 'test@gmail.com' }));
-    const user = UserMock.object;
-    const md5 = '1aedb8d9dc4751e229a335e371db8058';
-
-    const gravatar = user.gravatar();
-    expect(gravatar.includes(md5)).to.equal(true);
-  });
 });

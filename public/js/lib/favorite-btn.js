@@ -8,8 +8,6 @@ $('.grid-item').hover(function fadeButtonIn() {
 
 $('.favorite-btn').click(function favoriteOnClick() {
   const favorited = $(this).hasClass('fas');
-  const $recipe = $(this).closest('.grid-item');
-  console.log($recipe.attr('id'));
 
   $(this).toggleClass('far');
   $(this).toggleClass('fas');
@@ -18,4 +16,11 @@ $('.favorite-btn').click(function favoriteOnClick() {
     $(this).addClass('bouncing');
     $(this).effect('bounce', { times: 2, distance: 15 }, 550, () => $(this).removeClass('bouncing'));
   }
+
+  fetch(`/favorites/${$(this).closest('.grid-item').attr('id')}`, {
+    method: favorited ? 'DELETE' : 'PUT',
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+    },
+  });
 });

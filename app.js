@@ -111,6 +111,11 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
 app.get('/', recipeController.index);
 app.get('/recipes', recipeController.index);
 app.get('/recipes/page/:page', recipeController.index);
+
+app.get('/favorites', passportConfig.isAuthenticated, recipeController.getFavorites);
+app.put('/favorites/:id', passportConfig.isAuthenticated, userController.putFavorite);
+app.delete('/favorites/:id', passportConfig.isAuthenticated, userController.deleteFavorite);
+
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
@@ -120,8 +125,10 @@ app.get('/reset/:token', userController.getReset);
 app.post('/reset/:token', userController.postReset);
 app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
+
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);
+
 app.get('/account/verify', passportConfig.isAuthenticated, userController.getVerifyEmail);
 app.get('/account/verify/:token', passportConfig.isAuthenticated, userController.getVerifyEmailToken);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);

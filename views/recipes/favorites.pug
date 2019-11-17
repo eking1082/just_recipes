@@ -1,17 +1,16 @@
 extends ../layout
 include mixins/recipe-card
-include mixins/infinite-scroll
 
 block content
   if recipes.length > 0
     .grid
       .grid-sizer.col-xs-12.col-md-6.col-lg-4
       each recipe in recipes
-        +recipeCard(recipe, recipe.favorited)
+        +recipeCard(recipe, true)
 
     if !lastPage
-      +infiniteScroll('recipes', keyword)
+      +infiniteScroll('favorites')
 
   else
     .text-center.pt-4
-      h3 No recipes found that match "#{keyword}"...
+      h3 You don't have any favorites yet

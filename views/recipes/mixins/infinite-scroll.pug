@@ -1,0 +1,10 @@
+mixin infiniteScroll(pageType, keyword)
+  if keyword
+    a.pagination__next(hidden href=`/${pageType}?q=${keyword}&p=2`)
+  else
+    a.pagination__next(hidden href=`/${pageType}?p=2`)
+
+  .infinite-scroll-request.text-center.m-3
+    .spinner-grow.spinner-grow-sm.text-secondary(role='status')
+    .spinner-grow.spinner-grow-sm.text-secondary(role='status')
+    .spinner-grow.spinner-grow-sm.text-secondary(role='status')

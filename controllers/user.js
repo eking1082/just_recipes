@@ -1,11 +1,13 @@
 const { promisify } = require('util');
 const crypto = require('crypto');
+const moment = require('moment');
 const nodemailer = require('nodemailer');
 const passport = require('passport');
 const _ = require('lodash');
 const validator = require('validator');
 const mailChecker = require('mailchecker');
 const { User } = require('../models');
+const { getOffsetAndLimit } = require('../utils/paging');
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -564,4 +566,37 @@ exports.postForgot = (req, res, next) => {
     .then(sendForgotPasswordEmail)
     .then(() => res.redirect('/forgot'))
     .catch(next);
+};
+
+/**
+ * PUT /favorites/:id
+ * Add user favorite
+ */
+exports.putFavorite = (req, res) => {
+  const { user } = req;
+  const { id: recipeId } = req.params;
+
+  User.update({
+    _id: user.id,
+    'favorites.recipeId': { $ne: recipeId },
+  }, {
+    $push: {
+      favorites: {
+        recipeId,
+        favoritedAt: moment(),
+      },
+    },
+  }).then(() => res.sendStatus(200));
+};
+
+/**
+ * DELETE /favorites/:id
+ * Delete user favorite
+ */
+exports.deleteFavorite = (req, res) => {
+  const { user } = req;
+  const { id: recipeId } = req.params;
+
+  User.update({ _id: user.id }, { $pull: { favorites: { recipeId } } })
+    .then(() => res.sendStatus(200));
 };

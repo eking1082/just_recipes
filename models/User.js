@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -13,6 +12,12 @@ const userSchema = new mongoose.Schema({
   github: String,
   google: String,
   tokens: Array,
+  favorites: [
+    {
+      recipeId: String,
+      favoritedAt: Date,
+    },
+  ],
 
   profile: {
     name: String,
@@ -40,7 +45,7 @@ userSchema.pre('save', function save(next) {
 });
 
 /**
- * Helper method for validating user's password.
+ * Validate user's password.
  */
 userSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {

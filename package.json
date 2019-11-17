@@ -43,6 +43,7 @@
     "imagesloaded": "^4.1.4",
     "infinite-scroll": "^3.0.6",
     "jquery": "^3.4.1",
+    "jquery-ui-dist": "^1.12.1",
     "lazyload": "^2.0.0-rc.2",
     "lodash": "^4.17.15",
     "lusca": "^1.6.1",
@@ -83,7 +84,6 @@
     "mocha": "^6.2.1",
     "nodemon": "^1.19.3",
     "nyc": "^14.1.1",
-    "pryjs": "^1.0.3",
     "sinon": "^7.5.0",
     "sinon-mongoose": "^2.3.0",
     "supertest": "^4.0.2"

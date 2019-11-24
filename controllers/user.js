@@ -7,7 +7,6 @@ const _ = require('lodash');
 const validator = require('validator');
 const mailChecker = require('mailchecker');
 const { User } = require('../models');
-const { getOffsetAndLimit } = require('../utils/paging');
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 

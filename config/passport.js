@@ -189,6 +189,7 @@ passport.use(new GitHubStrategy({
  */
 exports.isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
+    console.log(req);
     return next();
   }
   res.redirect('/login');

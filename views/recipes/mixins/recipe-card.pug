@@ -4,8 +4,13 @@ mixin recipeCard(recipe, favorited)
       .card-header.text-center
         h5.card-title.text-dark #{recipe.name}
         h6.card-subtitle
-          a.text-muted.no-underline(href=recipe.source.url target='_blank' data-toggle='tooltip' data-title=`Full recipe on ${recipe.source.name}`) #{recipe.source.name}
-        i.fa-heart.fa-lg.favorite-btn.text-secondary(class=`fa${favorited ? 's' : 'r'}`)
+          a.text-muted.no-underline(href=recipe.source.url target='_blank' data-toggle='tooltip' title=`Full recipe on ${recipe.source.name}`) #{recipe.source.name}
+
+        if user
+          i.fa-heart.fa-lg.favorite-btn.text-secondary(class=`fa${favorited ? 's' : 'r'}`)
+        else
+          i.far.fa-heart.fa-lg.favorite-btn.text-secondary.disabled(data-toggle='modal' data-target='#loginModal')
+
       img.card-img.rounded-0(src=recipe.thumbnailUrl alt=recipe.name)
       .card-body.text-lowercase.p-3
         ul.list-group.list-group-flush

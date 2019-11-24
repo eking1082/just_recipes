@@ -165,6 +165,9 @@ textarea {
   text-decoration: none !important;
 }
 
+// Tooltips
+// -------------------------
+
 .tooltip-inner {
   background-color: $dark;
   max-width: 150px;
@@ -172,4 +175,55 @@ textarea {
 
 .bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
   border-bottom-color: $dark;
+}
+
+// Login Modal
+// -------------------------
+
+.login .modal-dialog{
+  width: 350px;
+}
+
+.login .modal-header {
+  border: 0 none;
+}
+
+.login .modal-footer {
+  display: block;
+  text-align: center;
+  border-top: 0;
+  padding: 10px 20px 20px;
+}
+
+.login input {
+  height: 46px;
+}
+
+@media (max-width:400px){
+  .login .modal-dialog{
+    width: 100%;
+  }
+}
+
+// Separator
+// -------------------------
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.separator::before, .separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid $gray-500;
+}
+
+.separator::before {
+    margin-right: .25em;
+}
+
+.separator::after {
+    margin-left: .25em;
 }

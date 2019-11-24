@@ -1,0 +1,43 @@
+#loginModal.modal.fade.login(tabindex='-1' role='dialog')
+  .modal-dialog.modal-dialog-centered(role='document')
+    .modal-content
+      .modal-header
+        h5.modal-title Sign in
+        button.close.text-muted(type='button' data-dismiss='modal') &times;
+      .modal-body
+        form(id='loginForm' method='POST' action='/login')
+          input(type='hidden', name='_csrf', value=_csrf)
+          input.form-control.mb-1(type='email', name='email', id='loginEmail', placeholder='Email', autofocus, autocomplete='email', required)
+          input.form-control.mb-1(type='password', name='password', id='loginPassword', placeholder='Password', autocomplete='current-password', required)
+          button.btn.btn-block.btn-primary(type='submit') Sign in
+
+        form(id='registerForm' method='POST' action='/signup' style='display: none;')
+          input(type='hidden', name='_csrf', value=_csrf)
+          input.form-control.mb-1(type='email', name='email', id='registerEmail', placeholder='Email', autofocus, autocomplete='email', required)
+          input.form-control.mb-1(type='password', name='password', id='registerPassword', placeholder='Password', autocomplete='new-password', required)
+          input.form-control.mb-1(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', autocomplete='new-password', required)
+          button.btn.btn-block.btn-primary(type='submit') Register
+
+        .separator.my-4.mx-2
+          span.mx-4 or
+
+        a.btn.btn-block.btn-social.btn-google(href='/auth/google')
+          i.fab.fa-google
+          | Sign in with Google
+        a.btn.btn-block.btn-social.btn-github(href='/auth/github')
+          i.fab.fa-github
+          | Sign in with GitHub
+
+      .modal-footer
+        #loginFooter
+          div.mb-1
+            | Forgot your password? 
+            a(href='/forgot') Reset it
+          div
+            | New here? 
+            a(href='javascript: showRegisterForm();') Create an account
+
+        #registerFooter(style='display: none;')
+          div
+            | Already have an account? 
+            a(href='javascript: showLoginForm();') Sign in

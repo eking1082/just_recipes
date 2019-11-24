@@ -13,7 +13,7 @@ nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-primary.py-3
       ul.navbar-nav
         if !user
           li.nav-item(class=(title === 'Login') ? 'active' : undefined)
-            a.nav-link(href='/login') Login
+            button.btn.btn-link.nav-link(data-toggle='modal' data-target='#loginModal') Sign in
         else
           li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
             a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')

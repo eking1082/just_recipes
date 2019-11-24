@@ -113,7 +113,7 @@ app.get('/recipes', recipeController.index);
 app.get('/recipes/page/:page', recipeController.index);
 
 app.get('/favorites', passportConfig.isAuthenticated, recipeController.getFavorites);
-app.put('/favorites/:id', passportConfig.isAuthenticated, userController.putFavorite);
+app.post('/favorites/:id', passportConfig.isAuthenticated, userController.putFavorite);
 app.delete('/favorites/:id', passportConfig.isAuthenticated, userController.deleteFavorite);
 
 app.get('/login', userController.getLogin);

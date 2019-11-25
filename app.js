@@ -49,6 +49,7 @@ app.set('host', '0.0.0.0');
 app.set('port', process.env.PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
 app.use(compression());
 app.use(sass({
   src: path.join(__dirname, 'public'),
@@ -113,7 +114,7 @@ app.get('/recipes', recipeController.index);
 app.get('/recipes/page/:page', recipeController.index);
 
 app.get('/favorites', passportConfig.isAuthenticated, recipeController.getFavorites);
-app.post('/favorites/:id', passportConfig.isAuthenticated, userController.putFavorite);
+app.put('/favorites/:id', passportConfig.isAuthenticated, userController.putFavorite);
 app.delete('/favorites/:id', passportConfig.isAuthenticated, userController.deleteFavorite);
 
 app.get('/login', userController.getLogin);

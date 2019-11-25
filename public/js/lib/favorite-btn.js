@@ -20,7 +20,7 @@ $('.favorite-btn').click(function favoriteOnClick() {
   }
 
   fetch(`/favorites/${$this.closest('.grid-item').attr('id')}`, {
-    method: favorited ? 'DELETE' : 'POST',
+    method: favorited ? 'DELETE' : 'PUT',
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
     },

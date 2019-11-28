@@ -33,21 +33,18 @@ exports.postLogin = (req, res, next) => {
   if (validator.isEmpty(req.body.password)) validationErrors.push({ msg: 'Password cannot be blank.' });
 
   if (validationErrors.length) {
-    req.flash('errors', validationErrors);
-    return res.redirect('/login');
+    return res.status(400).json(validationErrors);
   }
   req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false });
 
   passport.authenticate('local', (err, user, info) => {
     if (err) { return next(err); }
     if (!user) {
-      req.flash('errors', info);
-      return res.redirect('/login');
+      return res.status(401).json(info);
     }
     req.logIn(user, (err) => {
       if (err) { return next(err); }
-      req.flash('success', { msg: 'Success! You are logged in.' });
-      res.redirect(req.session.returnTo || '/');
+      res.status(200).json({ msg: 'Success' });
     });
   })(req, res, next);
 };
@@ -89,8 +86,7 @@ exports.postSignup = (req, res, next) => {
   if (req.body.password !== req.body.confirmPassword) validationErrors.push({ msg: 'Passwords do not match' });
 
   if (validationErrors.length) {
-    req.flash('errors', validationErrors);
-    return res.redirect('/signup');
+    return res.status(400).json(validationErrors);
   }
   req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false });
 
@@ -102,8 +98,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
-      req.flash('errors', { msg: 'Account with that email address already exists.' });
-      return res.redirect('/signup');
+      return res.status(400).json({ msg: 'Account with that email address already exists.' });
     }
     user.save((err) => {
       if (err) { return next(err); }
@@ -111,7 +106,7 @@ exports.postSignup = (req, res, next) => {
         if (err) {
           return next(err);
         }
-        res.redirect('/');
+        res.status(200).json({ msg: 'Success' });
       });
     });
   });

@@ -4,7 +4,10 @@
       .modal-header
         h5.modal-title Sign in
         button.close.text-muted(type='button' data-dismiss='modal') &times;
+
       .modal-body
+        #errors.mb-3(style='display: none;')
+
         form(id='loginForm' method='POST' action='/login')
           input(type='hidden', name='_csrf', value=_csrf)
           input.form-control.mb-1(type='email', name='email', id='loginEmail', placeholder='Email', autofocus, autocomplete='email', required)

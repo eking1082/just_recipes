@@ -13,8 +13,7 @@ function showLoginForm() {
   $('.modal-title').html('Sign in');
 }
 
-
-function postData(event) {
+function postData(event, postTo) {
   event.preventDefault();
 
   const formData = new FormData(event.target);
@@ -23,15 +22,28 @@ function postData(event) {
     data[key] = value;
   });
 
-  fetch('/login', {
+  fetch(`/${postTo}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   }).then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.error(err);
+    if (res.ok) {
+      window.location.reload();
+    } else {
+      res.json().then((res) => {
+        const $errors = $('#errors');
+        $errors.empty();
+
+        if (!(res instanceof Array)) res = [res];
+        res.forEach(({ msg }) => {
+          $errors.append(`<span class="text-danger">${msg}</span><br>`);
+        });
+
+        $errors.fadeIn('fast');
+      });
+    }
   });
 }
 
-$('#loginForm').submit((e) => postData(e));
+$('#loginForm').submit((e) => postData(e, 'login'));
+$('#registerForm').submit((e) => postData(e, 'signup'));

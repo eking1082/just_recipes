@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const passport = require('passport');
 const refresh = require('passport-oauth2-refresh');
 const { Strategy: LocalStrategy } = require('passport-local');

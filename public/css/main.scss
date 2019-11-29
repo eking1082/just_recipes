@@ -180,9 +180,9 @@ textarea {
 // Login Modal
 // -------------------------
 
-.login .modal-dialog{
-  width: 350px;
-}
+// .login .modal-dialog{
+//   width: 350px;
+// }
 
 .login .modal-header {
   border: 0 none;
@@ -199,9 +199,9 @@ textarea {
   height: 46px;
 }
 
-@media (max-width:400px){
+@media (min-width: 576px){
   .login .modal-dialog{
-    width: 100%;
+    width: 350px;
   }
 }
 

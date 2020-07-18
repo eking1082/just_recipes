@@ -45,7 +45,7 @@
     "jquery": "^3.4.1",
     "jquery-ui-dist": "^1.12.1",
     "lazyload": "^2.0.0-rc.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "lusca": "^1.6.1",
     "mailchecker": "^3.2.35",
     "masonry-layout": "^4.2.2",
